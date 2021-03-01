@@ -1,2 +1,2 @@
 # github-follower-analysis
- analysze github followers
+ analyse github followers
