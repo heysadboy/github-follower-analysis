@@ -1,38 +1,33 @@
 import requests
 import simplejson as json
 
-username = "USERNAME"
-password = "PASSWORD"
-session = requests.Session()
-session.auth = (username, password)
+username = "username"
+token = "token"
+headers = {'Authorization': 'token ' + token}
 
 def get_followers():
-    url = "https://api.github.com/users/heysadboy/followers"
-    response = session.get(url)
+    url = "https://api.github.com/users/{username}/followers"
+    response = requests.get(url.format(username = username), headers = headers)
     if response.status_code == 403:
-        status = "API Limit reached"
+        status = "API Limit Reached"
         return status
     data = json.loads(response.text)
-
     followers = []
     try:
         for user in data:
             followers.append(user['login'])
     except Exception as e:
         print(e)
-    
     return followers
 
 def get_non_followers():
     followers = get_followers()
-    url = "https://api.github.com/users/{}/following/heysadboy"
+    url = "https://api.github.com/users/{follower}/following/{username}"
     non_followers = []
-    for follower in followers:
-        res = session.get(url.format(follower))
-        print(follower, res.status_code)
+    for (i, follower) in enumerate(followers):
+        res = requests.get(url.format(follower = follower, username = username), headers = headers)
         if res.status_code == 404:
             non_followers.append(follower)
-    
     return non_followers
 
 non_followers = get_non_followers()
