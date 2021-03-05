@@ -6,8 +6,8 @@ token = "token"
 headers = {'Authorization': 'token ' + token}
 
 def get_followers():
-    url = "https://api.github.com/users/{username}/followers"
-    response = requests.get(url.format(username = username), headers = headers)
+    url = "https://api.github.com/user/following?per_page=100"
+    response = requests.get(url, headers = headers)
     if response.status_code == 403:
         status = "API Limit Reached"
         return status
@@ -31,4 +31,10 @@ def get_non_followers():
     return non_followers
 
 non_followers = get_non_followers()
-print(non_followers)
+
+if len(non_followers) == 0:
+    print("No non-followers")
+else:
+    print("Here is the list of traitors")
+    for non_follower in non_followers:
+        print(non_follower)
